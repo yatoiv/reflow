@@ -148,6 +148,11 @@ impl<'a, T: 'a + MemoryView> Oven<'a, T> {
                     self.buf_to_reg(*reg, *size)?;
                 }
 
+                // vvv ADD THIS MATCH ARM vvv
+                Parameter::RegBytes(reg, value) => {
+                    self.write_data_to_reg(*reg, value)?;
+                }
+
                 Parameter::MovReg(from, to) => {
                     self.mov_reg(*from, *to)?;
                 }
@@ -318,19 +323,20 @@ impl<'a, T: 'a + MemoryView> Oven<'a, T> {
 
         sp -= self.arch.ptr_size() as u64;
 
-        match self.arch.unicorn_mode() {
-            unicorn_const::Mode::MODE_32 => {
-                let value32 = value as u32;
-                self.unicorn
-                    .mem_write(sp, value32.as_bytes())
-                    .map_err(|_| "unable to write memory at sp")?;
-            }
-            unicorn_const::Mode::MODE_64 => {
-                self.unicorn
-                    .mem_write(sp, value.as_bytes())
-                    .map_err(|_| "unable to write memory at sp")?;
-            }
-            _ => unreachable!("invalid architecture"),
+        // Get the mode first
+        let mode = self.arch.unicorn_mode();
+
+        if mode.bits() == unicorn_const::Mode::MODE_32.bits() {
+            let value32 = value as u32;
+            self.unicorn
+                .mem_write(sp, value32.as_bytes())
+                .map_err(|_| "unable to write memory at sp")?;
+        } else if mode.bits() == unicorn_const::Mode::MODE_64.bits() {
+            self.unicorn
+                .mem_write(sp, value.as_bytes())
+                .map_err(|_| "unable to write memory at sp")?;
+        } else {
+            unreachable!("invalid architecture");
         }
 
         self.unicorn
