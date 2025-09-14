@@ -325,13 +325,12 @@ impl<'a, T: 'a + MemoryView> Oven<'a, T> {
 
         // Get the mode first
         let mode = self.arch.unicorn_mode();
-
-        if mode.bits() == unicorn_const::Mode::MODE_32.bits() {
+        if mode.contains(unicorn_const::Mode::MODE_32) {
             let value32 = value as u32;
             self.unicorn
                 .mem_write(sp, value32.as_bytes())
                 .map_err(|_| "unable to write memory at sp")?;
-        } else if mode.bits() == unicorn_const::Mode::MODE_64.bits() {
+        } else if mode.contains(unicorn_const::Mode::MODE_64) {
             self.unicorn
                 .mem_write(sp, value.as_bytes())
                 .map_err(|_| "unable to write memory at sp")?;
