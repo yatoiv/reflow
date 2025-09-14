@@ -13,7 +13,6 @@ pub enum Parameter<'a> {
     RegStr(RegisterX86, &'a str),
     RegString(RegisterX86, String),
     RegBuf(RegisterX86, usize),
-    RegBytes(RegisterX86, &'a [u8]),
     MovReg(RegisterX86, RegisterX86),
 }
 
@@ -61,12 +60,6 @@ impl<'a> Parameters<'a> {
 
     pub fn reg_u64(mut self, reg: RegisterX86, value: u64) -> Self {
         self.entries.push(Parameter::Reg64(reg, value));
-        self
-    }
-
-    // vvv ADD THIS METHOD vvv
-    pub fn reg_bytes(mut self, reg: RegisterX86, value: &'a [u8]) -> Self {
-        self.entries.push(Parameter::RegBytes(reg, value));
         self
     }
 

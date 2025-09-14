@@ -34,7 +34,7 @@ impl<'a, T: 'a + MemoryView> Oven<'a, T> {
             arch.unicorn_arch(),
             arch.unicorn_mode() | arch.unicorn_endianess(),
         )
-        .map_err(|_| "failed to instantiate emulator")?;
+            .map_err(|_| "failed to instantiate emulator")?;
         let data_base = arch.max_writable_addr() - DATA_SIZE as u64 + 1;
         Self {
             arch,
@@ -44,7 +44,7 @@ impl<'a, T: 'a + MemoryView> Oven<'a, T> {
             entry_point: Address::NULL,
             mem,
         }
-        .install_hooks()
+            .install_hooks()
     }
 
     #[allow(clippy::unnecessary_cast)]
@@ -146,11 +146,6 @@ impl<'a, T: 'a + MemoryView> Oven<'a, T> {
                 }
                 Parameter::RegBuf(reg, size) => {
                     self.buf_to_reg(*reg, *size)?;
-                }
-
-                // vvv ADD THIS MATCH ARM vvv
-                Parameter::RegBytes(reg, value) => {
-                    self.write_data_to_reg(*reg, value)?;
                 }
 
                 Parameter::MovReg(from, to) => {
@@ -323,7 +318,6 @@ impl<'a, T: 'a + MemoryView> Oven<'a, T> {
 
         sp -= self.arch.ptr_size() as u64;
 
-        // Get the mode first
         let mode = self.arch.unicorn_mode();
         if mode.contains(unicorn_const::Mode::MODE_32) {
             let value32 = value as u32;
