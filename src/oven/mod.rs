@@ -9,6 +9,8 @@ use std::convert::TryInto;
 
 use memflow::prelude::v1::*;
 
+use core_extensions::self_ops::SelfOps;
+
 use unicorn_engine::unicorn_const::*;
 use unicorn_engine::*;
 
