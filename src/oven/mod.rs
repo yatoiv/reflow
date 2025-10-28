@@ -47,6 +47,12 @@ impl<'a, T: 'a + MemoryView> Oven<'a, T> {
             .install_hooks()
     }
 
+    pub fn unicorn_mut(&mut self) -> Option<&mut Unicorn<'a, ()>> {
+        // Adjust the return type to match your actual unicorn type parameters.
+        // If you hold it in an Option or initialize lazily, map accordingly:
+        self.unicorn.as_mut() // e.g., Option<Unicorn<…>>
+    }
+    
     #[allow(clippy::unnecessary_cast)]
     pub fn stack(&mut self, stack: Stack) -> Result<&mut Self> {
         self.data_base = self.arch.max_writable_addr() - DATA_SIZE as u64 + 1;
