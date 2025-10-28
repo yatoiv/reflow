@@ -9,12 +9,11 @@ use std::convert::TryInto;
 
 use memflow::prelude::v1::*;
 
-use core_extensions::self_ops::SelfOps;
-
 use unicorn_engine::unicorn_const::*;
 use unicorn_engine::*;
 
 use capstone::{arch::*, *};
+use memflow::abi_stable::reexports::SelfOps;
 
 pub type Result<T> = std::result::Result<T, String>;
 
@@ -22,7 +21,7 @@ const DATA_SIZE: usize = size::mb(128);
 
 pub struct Oven<'a, T: 'a> {
     arch: OvenArchitecture,
-    pub(crate) unicorn: Unicorn<'a, ()>,
+    pub unicorn: Unicorn<'a, ()>,
     data_base: u64,
     ret_addr: Address,
     entry_point: Address,
@@ -47,12 +46,6 @@ impl<'a, T: 'a + MemoryView> Oven<'a, T> {
             mem,
         }
             .install_hooks()
-    }
-
-    pub fn unicorn_mut(&mut self) -> Option<&mut Unicorn<'a, ()>> {
-        // Adjust the return type to match your actual unicorn type parameters.
-        // If you hold it in an Option or initialize lazily, map accordingly:
-        self.unicorn.as_mut_() // e.g., Option<Unicorn<…>>
     }
     
     #[allow(clippy::unnecessary_cast)]

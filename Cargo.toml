@@ -1,6 +1,6 @@
 [package]
 name = "reflow"
-version = "0.2.24"
+version = "0.2.25"
 authors = ["ko1N <ko1N1337@gmail.com>", "Aurimas Blažulionis <0x60@pm.me>"]
 edition = "2018"
 
